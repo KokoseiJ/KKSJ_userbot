@@ -1,4 +1,4 @@
-import os, telethon
+import os, telethon, importlib
 from telethon import TelegramClient, events
 
 try:
@@ -20,6 +20,7 @@ client = TelegramClient('meow', api_id, api_hash)
 print("Succesfully logged in.")
 print("Loading modules...")
 
+modules = {}
 public_command = []
 private_command = []
 
@@ -27,8 +28,8 @@ for x in os.listdir("modules"):
     if "__" in x:
         continue
     module_name = x.split('.')[0]
-    exec("import modules." + module_name)
-    module_mode = eval("modules." + module_name + ".mode")
+    modules[module_name] = importlib.import_module("modules." + module_name)
+    module_mode = modules[module_name].mode
     if module_mode == "public":
         public_command.append(module_name)
     elif module_mode == "private":
@@ -48,12 +49,38 @@ async def _(event):
             command = event.raw_text[1:].split(' ')[0]
             if command in private_command:
                 print("running private command", command, "...")
-                await getattr(modules, command).main(client, event)
+                await modules[command].main(client, event)
+            elif command == "update":
+                replytxt = ""
+                for x in os.listdir("modules"):
+                    if "__" in x:
+                        continue
+                    module_name = x.split('.')[0]
+                    if module_name in public_command + private_command:
+                        modules[module_name] = importlib.reload(modules[module_name])
+                        module_mode = modules[module_name].mode
+                        print("reloaded", module_mode, "module", module_name)
+                        replytxt += ("reloaded " + module_mode + " module " + module_name + "\n")
+                    else:
+                        modules[module_name] = importlib.import_module("modules." + module_name)
+                        module_mode = modules[module_name].mode
+                        if module_mode == "public":
+                            public_command.append(module_name)
+                        elif module_mode == "private":
+                            private_command.append(module_name)
+                        elif module_mode == "multi":
+                            public_command.append(module_name)
+                            private_command.append(module_name)
+                        else:
+                           continue
+                        print("imported", module_mode, "module", module_name)
+                        replytxt += ("imported " + module_mode + " module " + module_name + "\n")
+                await event.reply("`" + replytxt + "`")
     elif event.raw_text[0] == "!":
         command = event.raw_text[1:].split(' ')[0]
         if command in public_command:
             print("running public command", command, "...")
-            await getattr(modules, command).main(client, event)
+            await modules[command].main(client, event)
 
 client.start()
 client.run_until_disconnected()
