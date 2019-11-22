@@ -1,7 +1,7 @@
 import sys
 import telethon
 mode = "private"
-async def main(event):
+async def main(client, event):
 	print(".alive has been called")
 	replytxt = "`KKSJ_userbot\n" +\
 	"I am alive, Young man!\n\n" +\

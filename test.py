@@ -27,11 +27,14 @@ for x in os.listdir("modules"):
     if "__" in x:
         continue
     module_name = x.split('.')[0]
-    exec("from modules import " + module_name)
-    module_mode = eval(module_name + ".mode")
+    exec("import modules." + module_name)
+    module_mode = eval("modules." + module_name + ".mode")
     if module_mode == "public":
         public_command.append(module_name)
     elif module_mode == "private":
+        private_command.append(module_name)
+    elif module_mode == "multi":
+        public_command.append(module_name)
         private_command.append(module_name)
     else:
         continue
@@ -45,7 +48,12 @@ async def _(event):
             command = event.raw_text[1:].split(' ')[0]
             if command in private_command:
                 print("running private command", command, "...")
-                await globals()[command].main(event)
+                await getattr(modules, command).main(client, event)
+    elif event.raw_text[0] == "!":
+        command = event.raw_text[1:].split(' ')[0]
+        if command in public_command:
+            print("running public command", command, "...")
+            await getattr(modules, command).main(client, event)
 
 client.start()
 client.run_until_disconnected()
