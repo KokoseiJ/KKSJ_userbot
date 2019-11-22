@@ -42,19 +42,10 @@ async def _(event):
     print(event.raw_text)
     if event.raw_text[0] == ".":
         if event.sender.is_self:
-            '''
-            print("private command detected")
             command = event.raw_text[1:].split(' ')[0]
-            print(command)
             if command in private_command:
-                print("run", command)
-                exec("await " + command + ".main(event)")
-            '''
-            exec("""print(".alive has been called")
-            await event.reply("`I am alive, Young man!\n\n" + \
-            "Python Version: " + sys.version.split(' ')[0] + "\n" + \
-            "Telethon version: " + telethon.__version__ + "`" \
-            )""")
+                print("running private command", command, "...")
+                await globals()[command].main(event)
 
 client.start()
 client.run_until_disconnected()
