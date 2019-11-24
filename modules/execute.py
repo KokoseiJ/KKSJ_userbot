@@ -8,7 +8,7 @@ async def main(client, event):
         command = event.raw_text[1:].split(' ')[1:]
         if command:
             process = subprocess.run(command, capture_output = True)
-            replytxt = "`" + process.stdout.decode("utf+8") + "`"
+            replytxt = "`" + process.stdout.decode("utf-8") + "`"
 
         else:
             replytxt = "`Seems like you didn't provide a command`"
