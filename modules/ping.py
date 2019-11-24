@@ -1,4 +1,5 @@
 import subprocess
+from subprocess import PIPE, STDOUT
 
 mode = "private"
 
@@ -8,7 +9,7 @@ async def main(client, event):
         address = event.raw_text[1:].split(' ')[1:]
         if not address:
             address = ["google.com"]
-        process = subprocess.run(["ping"] + address + ["-c 4"], capture_output = True)
+        process = subprocess.run(["ping"] + address + ["-c 4"], stdout = PIPE, stderr = STDOUT)
         avr_ping = process.stdout.decode("utf-8").split("\n")[-2].split("/")[-3]
     
         replytxt ="`pong!\n\n" +\
