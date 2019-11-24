@@ -21,6 +21,7 @@ print("Succesfully logged in.")
 print("Loading modules...")
 
 modules = {}
+
 public_command = []
 private_command = []
 
@@ -42,45 +43,19 @@ for x in os.listdir("modules"):
     print("imported", module_mode, "module", module_name)
 
 @client.on(events.NewMessage)
-async def _(event):
-    print(event.raw_text)
-    if event.raw_text[0] == ".":
-        if event.sender.is_self:
-            command = event.raw_text[1:].split(' ')[0]
-            if command in private_command:
-                print("running private command", command, "...")
-                await modules[command].main(client, event)
-            elif command == "update":
-                replytxt = ""
-                for x in os.listdir("modules"):
-                    if "__" in x:
-                        continue
-                    module_name = x.split('.')[0]
-                    if module_name in public_command + private_command:
-                        modules[module_name] = importlib.reload(modules[module_name])
-                        module_mode = modules[module_name].mode
-                        print("reloaded", module_mode, "module", module_name)
-                        replytxt += ("reloaded " + module_mode + " module " + module_name + "\n")
-                    else:
-                        modules[module_name] = importlib.import_module("modules." + module_name)
-                        module_mode = modules[module_name].mode
-                        if module_mode == "public":
-                            public_command.append(module_name)
-                        elif module_mode == "private":
-                            private_command.append(module_name)
-                        elif module_mode == "multi":
-                            public_command.append(module_name)
-                            private_command.append(module_name)
-                        else:
-                           continue
-                        print("imported", module_mode, "module", module_name)
-                        replytxt += ("imported " + module_mode + " module " + module_name + "\n")
-                await event.reply("`" + replytxt + "`")
+async def normal_command_handler(event):
+    if event.raw_text[0] == "." and event.sender.is_self:
+        command = event.raw_text[1:].split(' ')[0]
+        if command in private_command:
+            print("running private command", command, "...")
+            await modules[command].main(client, event)
     elif event.raw_text[0] == "!":
         command = event.raw_text[1:].split(' ')[0]
         if command in public_command:
             print("running public command", command, "...")
             await modules[command].main(client, event)
+    elif event.raw_text == "owo":
+        await event.reply("uwu")
 
 client.start()
 client.run_until_disconnected()
