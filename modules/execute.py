@@ -7,7 +7,7 @@ async def main(client, event):
     print("execute command has been called")
     try:
         commands = event.raw_text.split(' ')[1:]
-        command = [commands[0], commands[1:]]
+        command = [commands[0], " ".join(commands[1:])]
         if command:
             process = subprocess.run(command, stdout = PIPE, stderr = STDOUT)
             replytxt = "`" + process.stdout.decode("utf-8") + "`"
