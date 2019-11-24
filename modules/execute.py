@@ -16,9 +16,9 @@ async def main(client, event):
         print(replytxt)
 
         await event.reply(replytxt)
-        
+
     except Exception as e:
         replytxt = "`An exception has been occured.\n\n" +\
-        "stdout:" + process.stdout.decode("utf-8") + ons15"`"
+        "stdout:" + process.stdout.decode("utf-8") + "`"
         print(replytxt)
         await event.reply(replytxt)
