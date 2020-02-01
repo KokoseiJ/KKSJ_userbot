@@ -2,10 +2,10 @@ import os, telethon, importlib
 from telethon import TelegramClient, events
 
 try:
-    api_key = open("api", 'r').readlines()
+    api_key = open("api", 'r').read().split("/")
     print("Found an api file, use it as a key")
     api_id = api_key[0]
-    api_hash = api_key[0]
+    api_hash = api_key[1]
 
 except Exception as e:
     print(e)

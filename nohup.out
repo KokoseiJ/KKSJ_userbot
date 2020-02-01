@@ -1,0 +1,14 @@
+Found an api file, use it as a key
+Traceback (most recent call last):
+  File "test.py", line 19, in <module>
+    client = TelegramClient('meow', api_id, api_hash)
+  File "/usr/local/lib64/python3.7/site-packages/telethon/client/telegrambaseclient.py", line 252, in __init__
+    self.api_id = int(api_id)
+ValueError: invalid literal for int() with base 10: '830317/50f439ea5365766a2a788cb23c053402\n'
+Found an api file, use it as a key
+Succesfully logged in.
+Loading modules...
+imported private module python
+imported private module alive
+imported private module execute
+imported private module ping
